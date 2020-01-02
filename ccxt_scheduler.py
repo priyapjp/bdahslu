@@ -26,7 +26,7 @@ def pull():
     logging.info("-----  Pulling Data completed: " + get_timestamp_now())
 
 
-schedule.every(4).hours.do(job)
+schedule.every(3).hours.do(job)
 
 while 1:
     schedule.run_pending()
