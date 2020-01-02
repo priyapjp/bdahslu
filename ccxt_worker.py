@@ -72,44 +72,18 @@ def pull_data(exchange, from_date, n_candles, c_size, f_path, skip=False):
         time.sleep((exc_instance.rateLimit / msec) + 3)  # rate limit +5 seconds to just to be safe
 
     # print out any symbols we could not obtain
-    if len(missing_symbols) is not 0:
+    if len(missing_symbols) != 0:
         print('Unable to obtain:', missing_symbols)
 
     return missing_symbols
 
-
-def symbol_list_df(exchange, without=[], save=False, f_path=''):
-    # -- load market --
-    exc_instance = getattr(ccxt, exchange)()
-    exc_instance.load_markets()
-
-    # -- filter list --
-    symbol_list = [s for s in exc_instance.symbols if s not in without]
-
-    # -- save --
-    if save is True:
-
-        # -- create a folder --
-        newpath = f_path + '/'
-        if not os.path.exists(newpath):
-            os.makedirs(newpath)
-
-        # -- create df --
-        header = ['Symbols']
-        df = pd.DataFrame(symbol_list, columns=header)
-        filename = newpath + '{}_symbols.csv'.format(exchange)
-        df.to_csv(filename)
-
-    return symbol_list
-
-
 # check: kraken, binance, kucoin, huobipro, lbank
 # fails: bittrex, lbank, hitbtc
-from_date = '2019-12-31 00:00:00'
+#from_date = '2019-12-31 00:00:00'
 # exchanges = ['bittrex','binance','kraken','kucoin','lbank']
 # exchanges = ['bitfinex','hitbtc','huobipro','gateio','ftx','coinex','bittrex','binance','kraken','kucoin','lbank']
-exchanges = ['']
+#exchanges = ['kraken']
 
-for e in exchanges:
+#for e in exchanges:
     # pull_data(e,from_date,5,'1m','/home/jovyan/CCXT DATA')
-    pull_data(e, from_date, 1000, '1m', '/Users/lukas/development')
+#    pull_data(e, from_date, 1000, '1m', '/Users/lukas/development')
