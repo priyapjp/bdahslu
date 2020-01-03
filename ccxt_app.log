@@ -1,0 +1,3 @@
+INFO:schedule:Running job Every 4 seconds do job() (last run: [never], next run: 2020-01-03 08:16:30)
+INFO:root:I'm working...03-Jan-2020 (08:16:30)
+INFO:root:----- Start pulling Data: 03-Jan-2020 (08:16:30)
