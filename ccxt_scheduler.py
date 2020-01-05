@@ -41,8 +41,11 @@ def pull():
 
     exchanges = ['kraken', 'binance', 'kucoin']
     for e in exchanges:
-        worker.pull_data(e, from_date, 1000, '1m', '/Users/lukas/development')
-        logging.info("-----  Pulling Data completed for : " + e + get_timestamp_now())
+        try:
+            worker.pull_data(e, from_date, 1000, '1m', '/Users/lukas/development')
+            logging.info("-----  Pulling Data completed for : " + e + get_timestamp_now())
+        except Exception:
+            continue
     write_start_date(get_timestamp_now())
 
 
