@@ -4,10 +4,11 @@ import time
 import ccxt
 import pandas as pd
 import ccxt_hdfs_connector as hdfs
+from hdfs import InsecureClient
 
 
 # plotting
-
+client_hdfs = InsecureClient('http://172.17.0.1:9870', user='user')
 
 def create_ohlcv_df(data):
     header = ['Timestamp', 'Open', 'High', 'Low', 'Close', 'Volume']
@@ -55,10 +56,13 @@ def pull_data(exchange, from_date, n_candles, c_size, f_path, skip=False):
                 symbol = symbol.replace("/", "-")
                 filename = newpath + '{}_{}_[{}]-TO-[{}].csv'.format(exchange, symbol, df['Timestamp'].iloc[0],
                                                                      df['Timestamp'].iloc[-1])
+                filenameonly='{}_{}_[{}]-TO-[{}].csv'.format(exchange, symbol, df['Timestamp'].iloc[0],
+                                                                     df['Timestamp'].iloc[-1])
                 df.to_csv(filename)
 
                 # -- save to HDFS --
-                hdfs.write_to_hadoop_cluster(exchange, filename)
+                with client_hdfs.write('/user/hue/ccxt'+filenameonly, encoding='utf-8') as writer:
+                    df.to_csv(writer)
 
             except (ccxt.ExchangeError, ccxt.AuthenticationError, ccxt.ExchangeNotAvailable, ccxt.NetworkError,
                     ccxt.RequestTimeout,
@@ -82,6 +86,9 @@ def pull_data(exchange, from_date, n_candles, c_size, f_path, skip=False):
 
     return missing_symbols
 
+def get_hadoop_cluster():
+    content = client_hdfs.content('/user/hue/ccxt')
+    print(content)
 # check: kraken, binance, kucoin, huobipro, lbank
 # fails: bittrex, lbank, hitbtc
 # from_date = '2019-12-31 00:00:00'
