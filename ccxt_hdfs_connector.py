@@ -1,6 +1,6 @@
 from hdfs import InsecureClient
 
-client_hdfs = InsecureClient('http://localhost:9870', user='user')
+client_hdfs = InsecureClient('http://172.17.0.1:9870', user='user')
 
 
 def get_hadoop_cluster():
