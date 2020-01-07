@@ -45,11 +45,12 @@ def pull():
             worker.pull_data(e, from_date, 1000, '1m', '/Users/lukas/development')
             logging.info("-----  Pulling Data completed for : " + e + get_timestamp_now())
         except Exception:
+            logging.ERROR(e + ": pulling of data failed")
             continue
     write_start_date(get_timestamp_now())
 
 
-schedule.every(4).hours.do(job)
+schedule.every(10).seconds.do(job)
 
 while 1:
     schedule.run_pending()

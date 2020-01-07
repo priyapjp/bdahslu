@@ -3,6 +3,7 @@ import time
 
 import ccxt
 import pandas as pd
+import ccxt_hdfs_connector as hdfs
 
 
 # plotting
@@ -56,7 +57,11 @@ def pull_data(exchange, from_date, n_candles, c_size, f_path, skip=False):
                                                                      df['Timestamp'].iloc[-1])
                 df.to_csv(filename)
 
-            except (ccxt.ExchangeError, ccxt.AuthenticationError, ccxt.ExchangeNotAvailable, ccxt.RequestTimeout,
+                # -- save to HDFS --
+                hdfs.write_to_hadoop_cluster(exchange, filename)
+
+            except (ccxt.ExchangeError, ccxt.AuthenticationError, ccxt.ExchangeNotAvailable, ccxt.NetworkError,
+                    ccxt.RequestTimeout,
                     IndexError) as error:
                 print('Got an error', type(error).__name__, error.args, ', retrying in', hold, 'seconds...')
                 time.sleep(hold)
@@ -79,11 +84,11 @@ def pull_data(exchange, from_date, n_candles, c_size, f_path, skip=False):
 
 # check: kraken, binance, kucoin, huobipro, lbank
 # fails: bittrex, lbank, hitbtc
-#from_date = '2019-12-31 00:00:00'
+# from_date = '2019-12-31 00:00:00'
 # exchanges = ['bittrex','binance','kraken','kucoin','lbank']
 # exchanges = ['bitfinex','hitbtc','huobipro','gateio','ftx','coinex','bittrex','binance','kraken','kucoin','lbank']
-#exchanges = ['kraken']
+# exchanges = ['kraken']
 
-#for e in exchanges:
-    # pull_data(e,from_date,5,'1m','/home/jovyan/CCXT DATA')
+# for e in exchanges:
+# pull_data(e,from_date,5,'1m','/home/jovyan/CCXT DATA')
 #    pull_data(e, from_date, 1000, '1m', '/Users/lukas/development')
