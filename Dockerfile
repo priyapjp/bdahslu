@@ -11,4 +11,4 @@ RUN chmod a+x start.sh
 RUN pip install ccxt pandas schedule pickledb hdfs
 
 #CMD [ "python", "./ccxt_scheduler.py" ]
-CMD ["start.sh"]
+CMD ["./start.sh"]
