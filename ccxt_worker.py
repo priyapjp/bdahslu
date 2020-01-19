@@ -3,12 +3,11 @@ import time
 
 import ccxt
 import pandas as pd
-import ccxt_hdfs_connector as hdfs
 from hdfs import InsecureClient
 
 
 # plotting
-client_hdfs = InsecureClient('http://172.17.0.1:9870', user='user')
+client_hdfs = InsecureClient('http://172.17.0.1:9870', user='hue')
 
 def create_ohlcv_df(data):
     header = ['Timestamp', 'Open', 'High', 'Low', 'Close', 'Volume']
@@ -26,8 +25,8 @@ def pull_data(exchange, from_date, n_candles, c_size, f_path, skip=False):
 
     # -- create a folder --
     newpath = f_path + '/' + exchange + '/'
-    if not os.path.exists(newpath):
-        os.makedirs(newpath)
+    #if not os.path.exists(newpath):
+    #    os.makedirs(newpath)
 
     # -- load exchange --
     exc_instance = getattr(ccxt, exchange)()
@@ -58,10 +57,10 @@ def pull_data(exchange, from_date, n_candles, c_size, f_path, skip=False):
                                                                      df['Timestamp'].iloc[-1])
                 filenameonly='{}_{}_[{}]-TO-[{}].csv'.format(exchange, symbol, df['Timestamp'].iloc[0],
                                                                      df['Timestamp'].iloc[-1])
-                df.to_csv(filename)
+                #df.to_csv(filename)
 
                 # -- save to HDFS --
-                with client_hdfs.write('/user/hue/ccxt'+filenameonly, encoding='utf-8') as writer:
+                with client_hdfs.write('ccxtAutomated/'+exchange+'/'+filenameonly, encoding='utf-8') as writer:
                     df.to_csv(writer)
 
             except (ccxt.ExchangeError, ccxt.AuthenticationError, ccxt.ExchangeNotAvailable, ccxt.NetworkError,

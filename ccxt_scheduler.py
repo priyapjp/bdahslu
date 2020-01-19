@@ -39,13 +39,12 @@ def pull():
 
     print("Last Start: " + from_date)
 
-    exchanges = ['kraken', 'binance', 'kucoin']
+    #exchanges = ['kraken', 'binance', 'kucoin']
+    exchanges = ['acx', 'bitfinex', 'bittrex', 'btcalpha', 'digifinex', 'tidebit']
     for e in exchanges:
-        try:
-            worker.pull_data(e, from_date, 1000, '1m', '/Users/lukas/development')
-            logging.info("-----  Pulling Data completed for : " + e + get_timestamp_now())
-        except Exception:
-            continue
+        worker.pull_data(e, from_date, 10000, '1m', '/Users/lukas/development')
+        logging.info("-----  Pulling Data completed for : " + e + get_timestamp_now())
+
     write_start_date(get_timestamp_now())
 
 
