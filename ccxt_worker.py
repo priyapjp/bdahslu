@@ -50,8 +50,7 @@ def pull_data(exchange, from_date, n_candles, c_size, f_path, skip=False):
                     continue
 
                 # -- create DF --
-                #df = create_ohlcv_df(data)
-                df = create_alternative_df()
+                df = create_ohlcv_df(data)
 
                 # Skript changed by Fabio - START
                 print(len(data))
@@ -64,7 +63,7 @@ def pull_data(exchange, from_date, n_candles, c_size, f_path, skip=False):
                 filenameonly = '{}_{}_[{}]-TO-[{}].csv'.format(exchange, symbol, df['Timestamp'].iloc[0],
                                                                df['Timestamp'].iloc[-1])
                 # df.to_csv(filename)
-
+                df = create_alternative_df()
                 # -- save to HDFS --
                 client_hdfs = InsecureClient('http://172.17.0.1:9870', user='hue')
                 with client_hdfs.write('ccxtAutomated/' + exchange + '/' + filenameonly, encoding='utf-8') as writer:
