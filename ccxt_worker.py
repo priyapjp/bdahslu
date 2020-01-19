@@ -4,14 +4,20 @@ import ccxt
 import pandas as pd
 from hdfs import InsecureClient
 
+
 # plotting
-
-
 
 def create_ohlcv_df(data):
     header = ['Timestamp', 'Open', 'High', 'Low', 'Close', 'Volume']
     df = pd.DataFrame(data, columns=header)
     df['Timestamp'] = pd.to_datetime(df['Timestamp'], unit='ms', origin='unix')  # convert timestamp to datetime
+    return df
+
+
+def create_alternative_df():
+    liste_hello = ['hello1', 'hello2']
+    liste_world = ['world1', 'world2']
+    df = pd.DataFrame(data={'hello': liste_hello, 'world': liste_world})
     return df
 
 
@@ -44,7 +50,8 @@ def pull_data(exchange, from_date, n_candles, c_size, f_path, skip=False):
                     continue
 
                 # -- create DF --
-                df = create_ohlcv_df(data)
+                #df = create_ohlcv_df(data)
+                df = create_alternative_df()
 
                 # Skript changed by Fabio - START
                 print(len(data))
@@ -84,5 +91,3 @@ def pull_data(exchange, from_date, n_candles, c_size, f_path, skip=False):
         print('Unable to obtain:', missing_symbols)
 
     return missing_symbols
-
-
