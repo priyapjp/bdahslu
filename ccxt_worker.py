@@ -61,8 +61,8 @@ def pull_data(exchange, from_date, n_candles, c_size, f_path, skip=False):
                 symbol = symbol.replace("/", "-")
                 filename = newpath + '{}_{}_[{}]-TO-[{}].csv'.format(exchange, symbol, df['Timestamp'].iloc[0],
                                                                      df['Timestamp'].iloc[-1])
-                filenameonly = '{}_{}_[{}]-TO-[{}].csv'.format(exchange, symbol, df['Timestamp'].iloc[0].strftime("%d.%m.%Y-%H:%M:%S"),
-                                                               df['Timestamp'].iloc[-1].strftime("%d.%m.%Y-%H:%M:%S"))
+                filenameonly = '{}_{}_[{}]-TO-[{}].csv'.format(exchange, symbol, df['Timestamp'].iloc[0].strftime("%d.%m.%Y-%H_%M_%S"),
+                                                               df['Timestamp'].iloc[-1].strftime("%d.%m.%Y-%H_%M_%S"))
                 # df.to_csv(filename)
 
                 # -- save to HDFS --c
