@@ -4,10 +4,11 @@ COPY ccxt_worker.py ./
 COPY ccxt_scheduler.py ./
 COPY ccxt_hdfs_connector.py ./
 COPY hosts ./
+COPY start.sh ./
 
-RUN cat hosts >> /etc/hosts
-RUN cat /etc/hosts
+RUN chmod a+x start.sh
 
 RUN pip install ccxt pandas schedule pickledb hdfs
 
-CMD [ "python", "./ccxt_scheduler.py" ]
+#CMD [ "python", "./ccxt_scheduler.py" ]
+CMD ["start.sh"]
