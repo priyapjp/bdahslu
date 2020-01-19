@@ -6,6 +6,7 @@ from hdfs import InsecureClient
 
 
 # plotting
+client_hdfs = InsecureClient('http://172.17.0.1:9870', user='hue')
 
 def create_ohlcv_df(data):
     header = ['Timestamp', 'Open', 'High', 'Low', 'Close', 'Volume']
@@ -60,12 +61,12 @@ def pull_data(exchange, from_date, n_candles, c_size, f_path, skip=False):
                 symbol = symbol.replace("/", "-")
                 filename = newpath + '{}_{}_[{}]-TO-[{}].csv'.format(exchange, symbol, df['Timestamp'].iloc[0],
                                                                      df['Timestamp'].iloc[-1])
-                filenameonly = '{}_{}_[{}]-TO-[{}].csv'.format(exchange, symbol, df['Timestamp'].iloc[0],
-                                                               df['Timestamp'].iloc[-1])
+                filenameonly = '{}_{}_[{}]-TO-[{}].csv'.format(exchange, symbol, df['Timestamp'].iloc[0].strftime("%d.%m.%Y-%H:%M:%S"),
+                                                               df['Timestamp'].iloc[-1].strftime("%d.%m.%Y-%H:%M:%S"))
                 # df.to_csv(filename)
-                df = create_alternative_df()
-                # -- save to HDFS --
-                client_hdfs = InsecureClient('http://172.17.0.1:9870', user='hue')
+
+                # -- save to HDFS --c
+
                 with client_hdfs.write('ccxtAutomated/' + exchange + '/' + filenameonly, encoding='utf-8') as writer:
                     df.to_csv(writer)
 
