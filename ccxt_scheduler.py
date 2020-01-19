@@ -42,13 +42,13 @@ def pull():
     #exchanges = ['kraken', 'binance', 'kucoin']
     exchanges = ['acx', 'bitfinex', 'bittrex', 'btcalpha', 'digifinex', 'tidebit']
     for e in exchanges:
-        worker.pull_data(e, from_date, 10000, '1m', '/Users/lukas/development')
+        worker.pull_data(e, from_date, 10000, '1m', '/')
         logging.info("-----  Pulling Data completed for : " + e + get_timestamp_now())
 
     write_start_date(get_timestamp_now())
 
 
-schedule.every(10).seconds.do(job)
+schedule.every(4).minutes.do(job)
 
 while 1:
     schedule.run_pending()
