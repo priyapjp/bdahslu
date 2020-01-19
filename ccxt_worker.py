@@ -1,13 +1,12 @@
 import os
 import time
-
 import ccxt
 import pandas as pd
 from hdfs import InsecureClient
 
-
 # plotting
-client_hdfs = InsecureClient('http://172.17.0.1:9870', user='hue')
+
+
 
 def create_ohlcv_df(data):
     header = ['Timestamp', 'Open', 'High', 'Low', 'Close', 'Volume']
@@ -25,7 +24,7 @@ def pull_data(exchange, from_date, n_candles, c_size, f_path, skip=False):
 
     # -- create a folder --
     newpath = f_path + '/' + exchange + '/'
-    #if not os.path.exists(newpath):
+    # if not os.path.exists(newpath):
     #    os.makedirs(newpath)
 
     # -- load exchange --
@@ -55,12 +54,13 @@ def pull_data(exchange, from_date, n_candles, c_size, f_path, skip=False):
                 symbol = symbol.replace("/", "-")
                 filename = newpath + '{}_{}_[{}]-TO-[{}].csv'.format(exchange, symbol, df['Timestamp'].iloc[0],
                                                                      df['Timestamp'].iloc[-1])
-                filenameonly='{}_{}_[{}]-TO-[{}].csv'.format(exchange, symbol, df['Timestamp'].iloc[0],
-                                                                     df['Timestamp'].iloc[-1])
-                #df.to_csv(filename)
+                filenameonly = '{}_{}_[{}]-TO-[{}].csv'.format(exchange, symbol, df['Timestamp'].iloc[0],
+                                                               df['Timestamp'].iloc[-1])
+                # df.to_csv(filename)
 
                 # -- save to HDFS --
-                with client_hdfs.write('ccxtAutomated/'+exchange+'/'+filenameonly, encoding='utf-8') as writer:
+                client_hdfs = InsecureClient('http://172.17.0.1:9870', user='hue')
+                with client_hdfs.write('ccxtAutomated/' + exchange + '/' + filenameonly, encoding='utf-8') as writer:
                     df.to_csv(writer)
 
             except (ccxt.ExchangeError, ccxt.AuthenticationError, ccxt.ExchangeNotAvailable, ccxt.NetworkError,
@@ -85,16 +85,4 @@ def pull_data(exchange, from_date, n_candles, c_size, f_path, skip=False):
 
     return missing_symbols
 
-def get_hadoop_cluster():
-    content = client_hdfs.content('/user/hue/ccxt')
-    print(content)
-# check: kraken, binance, kucoin, huobipro, lbank
-# fails: bittrex, lbank, hitbtc
-# from_date = '2019-12-31 00:00:00'
-# exchanges = ['bittrex','binance','kraken','kucoin','lbank']
-# exchanges = ['bitfinex','hitbtc','huobipro','gateio','ftx','coinex','bittrex','binance','kraken','kucoin','lbank']
-# exchanges = ['kraken']
 
-# for e in exchanges:
-# pull_data(e,from_date,5,'1m','/home/jovyan/CCXT DATA')
-#    pull_data(e, from_date, 1000, '1m', '/Users/lukas/development')
