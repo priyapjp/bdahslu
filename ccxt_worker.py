@@ -4,6 +4,7 @@ import ccxt
 import pandas as pd
 from datetime import datetime
 from hdfs import InsecureClient
+from hdfs import HdfsError
 
 
 # plotting
@@ -70,7 +71,7 @@ def pull_data(exchange, from_date, n_candles, c_size, f_path, skip=False):
                     df.to_csv(writer)
 
             except (ccxt.ExchangeError, ccxt.AuthenticationError, ccxt.ExchangeNotAvailable, ccxt.NetworkError,
-                    ccxt.RequestTimeout,
+                    ccxt.RequestTimeout, HdfsError,
                     IndexError) as error:
                 print('Got an error', type(error).__name__, error.args, ', retrying in', hold, 'seconds...')
                 time.sleep(hold)
