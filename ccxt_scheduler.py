@@ -1,6 +1,7 @@
 import schedule
 import time
 from datetime import datetime
+from datetime import timedelta
 import ccxt_worker as worker
 import logging
 import pickledb
@@ -22,6 +23,11 @@ def get_timestamp_now():
     return datetime.now().strftime("%d-%b-%Y (%H:%M:%S)")
 
 
+def get_timestamp_start():
+    delta = datetime.now()-timedelta(hours=4)
+    return delta.strftime("%d-%b-%Y (%H:%M:%S)")
+
+
 def job():
     print("I'm Working ...." + get_timestamp_now())
     logging.info("I'm working..." + get_timestamp_now())
@@ -34,7 +40,7 @@ def pull():
     from_date = get_last_start_date()
 
     if not from_date:
-        from_date = get_timestamp_now()
+        from_date = get_timestamp_start()
         write_start_date(get_timestamp_now())
 
     print("Last Start: " + from_date)
@@ -42,13 +48,17 @@ def pull():
     #exchanges = ['kraken', 'binance', 'kucoin']
     exchanges = ['acx', 'bitfinex', 'bittrex', 'btcalpha', 'digifinex', 'tidebit']
     for e in exchanges:
-        worker.pull_data(e, from_date, 10000, '1m', '/')
-        logging.info("-----  Pulling Data completed for : " + e + get_timestamp_now())
+        try:
+            worker.pull_data(e, from_date, 10000, '1m', '/')
+            logging.info("-----  Pulling Data completed for : " + e + get_timestamp_now())
+        except Exception as e:
+            print("General Exception occured: "+str(e))
+            continue
 
     write_start_date(get_timestamp_now())
 
 
-schedule.every(4).minutes.do(job)
+schedule.every(4).hours.do(job)
 
 while 1:
     schedule.run_pending()

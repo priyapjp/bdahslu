@@ -2,11 +2,13 @@ import os
 import time
 import ccxt
 import pandas as pd
+from datetime import datetime
 from hdfs import InsecureClient
 
 
 # plotting
 client_hdfs = InsecureClient('http://172.17.0.1:9870', user='hue')
+
 
 def create_ohlcv_df(data):
     header = ['Timestamp', 'Open', 'High', 'Low', 'Close', 'Volume']
@@ -15,11 +17,8 @@ def create_ohlcv_df(data):
     return df
 
 
-def create_alternative_df():
-    liste_hello = ['hello1', 'hello2']
-    liste_world = ['world1', 'world2']
-    df = pd.DataFrame(data={'hello': liste_hello, 'world': liste_world})
-    return df
+def get_timestamp(timestr):
+    return datetime.strptime(timestr, "%d-%b-%Y (%H:%M:%S)").isoformat()
 
 
 def pull_data(exchange, from_date, n_candles, c_size, f_path, skip=False):
@@ -31,13 +30,13 @@ def pull_data(exchange, from_date, n_candles, c_size, f_path, skip=False):
 
     # -- create a folder --
     newpath = f_path + '/' + exchange + '/'
-    # if not os.path.exists(newpath):
+    #if not os.path.exists(newpath):
     #    os.makedirs(newpath)
 
     # -- load exchange --
     exc_instance = getattr(ccxt, exchange)()
     exc_instance.load_markets()
-    from_timestamp = exc_instance.parse8601(from_date)
+    from_timestamp = exc_instance.parse8601(get_timestamp(from_date))
 
     # -- pull ohlcv --
     for symbol in exc_instance.symbols:
@@ -59,11 +58,11 @@ def pull_data(exchange, from_date, n_candles, c_size, f_path, skip=False):
 
                 # -- save CSV --
                 symbol = symbol.replace("/", "-")
-                filename = newpath + '{}_{}_[{}]-TO-[{}].csv'.format(exchange, symbol, df['Timestamp'].iloc[0],
-                                                                     df['Timestamp'].iloc[-1])
+                filename = newpath + '{}_{}_[{}]-TO-[{}].csv'.format(exchange, symbol, df['Timestamp'].iloc[0].strftime("%d.%m.%Y-%H_%M_%S"),
+                                                                     df['Timestamp'].iloc[-1].strftime("%d.%m.%Y-%H_%M_%S"))
                 filenameonly = '{}_{}_[{}]-TO-[{}].csv'.format(exchange, symbol, df['Timestamp'].iloc[0].strftime("%d.%m.%Y-%H_%M_%S"),
                                                                df['Timestamp'].iloc[-1].strftime("%d.%m.%Y-%H_%M_%S"))
-                # df.to_csv(filename)
+                #df.to_csv(filename)
 
                 # -- save to HDFS --c
 
