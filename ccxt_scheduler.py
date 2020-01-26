@@ -24,7 +24,7 @@ def get_timestamp_now():
 
 
 def get_timestamp_start():
-    delta = datetime.now()-timedelta(hours=4)
+    delta = datetime.now()-timedelta(hours=1)
     return delta.strftime("%d-%b-%Y (%H:%M:%S)")
 
 
@@ -46,7 +46,7 @@ def pull():
     print("Last Start: " + from_date)
 
     #exchanges = ['kraken', 'binance', 'kucoin']
-    exchanges = ['acx', 'bitfinex', 'bittrex', 'btcalpha', 'digifinex', 'tidebit']
+    exchanges = ['acx', 'bitfinex', 'bittrex', 'btcalpha', 'digifinex', 'stex', 'tidebit']
     for e in exchanges:
         try:
             worker.pull_data(e, from_date, 10000, '1m', '/')
@@ -58,7 +58,7 @@ def pull():
     write_start_date(get_timestamp_now())
 
 
-schedule.every(4).hours.do(job)
+schedule.every(1).hours.do(job)
 
 while 1:
     schedule.run_pending()
